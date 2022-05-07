@@ -39,7 +39,7 @@ module.exports = (client, interaction) => {
                                 embeds: [new MessageEmbed()
                                     .setDescription(`Bu komutu kullanabilmek için **${yetki[cmd.perm]}** yetkisine sahip olmalısın.`)]
                             });
-                        cmd.run(client, interaction);
+                        return cmd.run(client, interaction);
                     }
                 })
             })

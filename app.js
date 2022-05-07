@@ -1,3 +1,5 @@
+const { REST } = require("@discordjs/rest");
+const { Routes } = require("discord-api-types/v9");
 const { Client, Intents, Collection } = require("discord.js");
 const client = new Client({
     intents: [
@@ -9,28 +11,40 @@ const client = new Client({
 const { token } = require("./ayarlar.json");
 const fs = require("fs");
 global.client = client;
-client.commands = new Collection();
+client.commands = (global.commands = []);
 fs.readdir("./komutlar/", (err, files) => {
-    if (err) throw err;
+  if (err) throw err;
 
-    files.forEach((f) => {
-        if (!f.endsWith(".js")) return;
-        let p = require(`./komutlar/${f}`);
-        client.commands.set(p.name, p);
-        console.log(`✔ Komut eklendi: ${p.name}`);
-    });
+  files.forEach((file) => {
+    if (!file.endsWith(".js")) return;
+    let props = require(`./komutlar/${file}`);
+
+    client.commands.push({
+      name: props.name.toLowerCase(),
+      description: props.description,
+      options: props.options,
+      type: 1
+
+    })
+    console.log(`👌 Slash Komut Yüklendi: ${props.name}`);
+  });
 });
 
 fs.readdir("./menuCmd/", (err, files) => {
     if (err) throw err;
-
-    files.forEach((f) => {
-        if (!f.endsWith(".js")) return;
-        let p = require(`./menuCmd/${f}`);
-        client.commands.set(p.name, p);
-        console.log(`✔ Menü Komut eklendi: ${p.name}`);
+  
+    files.forEach((file) => {
+      if (!file.endsWith(".js")) return;
+      let props = require(`./menuCmd/${file}`);
+  
+      client.commands.push({
+        name: props.name.toLowerCase(),
+        type: 2
+  
+      })
+      console.log(`👌 Menü Komut Yüklendi: ${props.name}`);
     });
-});
+  });
 
 fs.readdir("./events/", (_err, files) => {
     files.forEach((f) => {
@@ -43,4 +57,16 @@ fs.readdir("./events/", (_err, files) => {
         });
     });
 });
+
+client.on("ready", async () => {
+
+    const rest = new REST({ version: "9" }).setToken(token);
+    try {
+      await rest.put(Routes.applicationCommands(client.user.id), {
+        body: client.commands,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  });
 client.login(token);

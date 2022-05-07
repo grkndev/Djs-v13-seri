@@ -11,6 +11,6 @@ module.exports = async (client) => {
         status: "idle"
     });
 
-    chk_cmd(client);
+    //chk_cmd(client);
     console.log(`${client.user.tag} Aktif!`);
 }
