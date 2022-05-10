@@ -23,6 +23,7 @@ fs.readdir("./komutlar/", (err, files) => {
       name: props.name.toLowerCase(),
       description: props.description,
       options: props.options,
+      dm_permission: props.dm_permission,
       type: 1
 
     })

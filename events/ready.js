@@ -1,4 +1,3 @@
-const chk_cmd = require("../utils/check_cmd.js");
 module.exports = async (client) => {
     client.user.setPresence({
         activities: [
@@ -10,7 +9,5 @@ module.exports = async (client) => {
         ],
         status: "idle"
     });
-
-    //chk_cmd(client);
     console.log(`${client.user.tag} Aktif!`);
 }
